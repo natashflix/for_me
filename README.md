@@ -199,8 +199,6 @@ See detailed documentation:
 
 ## ⚠️ Limitations
 
-- Ingredient parsing optimized for EN/RU languages
-- Risk dictionary is MVP-level (can be extended)
 - Category detection may misclassify rare products
 - System is not medical advice; relies fully on user-provided profile data
 
@@ -266,7 +264,6 @@ This project demonstrates:
 
 ### Code Quality
 
-- All code is 100% English-only (no Russian in code, comments, or strings)
 - Type hints throughout
 - Comprehensive error handling
 - Production-ready observability
