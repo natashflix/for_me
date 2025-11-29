@@ -1,0 +1,29 @@
+# FOR ME System Requirements
+
+# Core dependencies
+google-adk>=0.1.0
+google-genai>=0.2.0
+
+# Vertex AI Agent Engine deployment
+google-cloud-aiplatform>=1.38.0
+
+# Web server dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6  # Required for file uploads
+
+# Environment variables management
+python-dotenv>=1.0.0
+
+# Standard library dependencies
+typing-extensions>=4.5.0
+
+# Optional: Database support for persistent storage
+# Uncomment if using DatabaseSessionService
+# sqlalchemy>=2.0.0
+
+# Development dependencies (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0  # For coverage reports
+
