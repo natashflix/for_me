@@ -6,7 +6,6 @@
 
 ## 💔 The Moment That Inspired This Project
 
-<<<<<<< HEAD
 Most people genuinely try to choose the right product — but ingredient lists make it almost impossible.
 
 A person buys a "gentle, nourishing" cream… only to discover drying alcohols hidden halfway down the INCI list.
@@ -37,9 +36,6 @@ FOR ME does **not** analyze diseases, symptoms, or treatments. It is strictly a 
 ---
 
 ## 🎯 Why Ingredient Lists Matter (But Nobody Reads Them)
-=======
-## ⭐ Problem Statement
->>>>>>> 36f61ba34c6f6ba4f8e67ef465e57b6113bd9e95
 
 Ingredient lists are:
 
