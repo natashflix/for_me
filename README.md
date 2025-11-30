@@ -6,8 +6,6 @@ The core output — the **FOR ME Score (0–100%)** — reflects how well a prod
 
 **⚠️ Important:** FOR ME is not a medical system. All recommendations are based solely on user-provided data and non-medical domain rules.
 
-![Architecture](./docs/ARCHITECTURE_DIAGRAM.md "FOR ME System Architecture")
-
 ## ⭐ Problem Statement
 
 Ingredient lists are:
