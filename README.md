@@ -1,53 +1,109 @@
-# ⭐ Project Overview — FOR ME
+# ⭐ FOR ME — Personalized Ingredient Intelligence
 
-**FOR ME** is a production-grade, multi-agent AI system that transforms raw ingredient lists (cosmetics, food, household products) into personalized compatibility scores.
+*A production-grade multi-agent system for real-world compatibility analysis*
 
-The core output — the **FOR ME Score (0–100%)** — reflects how well a product fits an individual user's allergies, sensitivities, and personal constraints.
+---
 
-**⚠️ Important:** FOR ME is not a medical system. All recommendations are based solely on user-provided data and non-medical domain rules.
+## 💔 The Moment That Inspired This Project
 
-![Architecture](./docs/ARCHITECTURE_DIAGRAM.md "FOR ME System Architecture")
+Most people genuinely try to choose the right product — but ingredient lists make it almost impossible.
 
-## ⭐ Problem Statement
+A person buys a "gentle, nourishing" cream… only to discover drying alcohols hidden halfway down the INCI list.
+
+Someone picks a protein bar with a clean-looking label… and misses the tiny "may contain traces of nuts" line blended into the packaging.
+
+Someone with curly hair trusts a shampoo "for all hair types"… and ends up with dry, stripped strands — because the formula is loaded with sulfates.
+
+Another person chooses a dish soap marketed as "safe for sensitive skin"… and reacts immediately to a preservative buried deep in the ingredient list.
+
+None of these are bad decisions. The information people *need* is there — just not in a form designed for humans.
+
+---
+
+## 🌟 What FOR ME Does
+
+FOR ME analyzes ingredient lists from **food, cosmetics, and household products** and transforms them into a **personalized FOR ME Score (0–100)** with clear, rule-based explanations.
+
+It turns long, inconsistent, multilingual ingredient text into:
+
+* a compatibility score tailored to the individual
+* transparent reasoning
+* ingredient-level insights
+* non-medical, safe personalization
+
+FOR ME does **not** analyze diseases, symptoms, or treatments. It is strictly a **consumer compatibility agent**, not a medical system.
+
+---
+
+## 🎯 Why Ingredient Lists Matter (But Nobody Reads Them)
 
 Ingredient lists are:
-- **long**
-- **multi-language**
-- **inconsistent**
-- and extremely confusing for the average user
 
-Most existing tools give generic advice, ignoring:
-- allergies
-- personal sensitivities
-- dietary restrictions
-- skin/hair needs
-- household safety preferences
+* long
+* multi-language
+* inconsistent
+* full of synonyms
+* and written for compliance, not clarity
 
-Manually checking ingredients is:
-- time-consuming
-- error-prone
-- exhausting — especially when managing multiple products
+Marketing promises simplicity:
 
-Users need a system that can instantly answer: **"Is this good for me?"**
+**"For all skin types."**
 
-## ⭐ Solution Statement
+**"Gentle."**
 
-FOR ME is a multi-agent analysis system that:
-- Parses multi-language ingredient lists
-- Detects product categories
-- Evaluates risks against user profiles
-- Computes domain-specific safety, sensitivity, and match scores
-- Generates a fully explainable FOR ME Score
-- Learns from repeated negative reactions
-- Provides user-friendly, non-medical explanations
+**"Clean."**
 
-This turns manual ingredient evaluation into an instant, structured, personalized decision.
+**"Safe for sensitive skin."**
 
-## ⭐ Architecture Overview
+But real compatibility is personal: your skin, your digestion, your allergies, your sensitivities, your reactions.
 
-FOR ME is built on a modular multi-agent architecture using the Google Agent Development Kit (ADK).
+FOR ME reads what marketing doesn't say — and shows whether a product is good for **you**.
 
-The system is coordinated by the **OrchestratorAgent**, which routes requests, manages profiles, and composes final outputs.
+---
+
+## 🧠 Why a Multi-Agent System?
+
+Ingredient analysis is not a single task — it is a pipeline:
+
+* parsing multilingual input
+* category detection
+* profile-aware constraints
+* deterministic scoring
+* safety routing
+* explanation generation
+* short-term personalization
+
+One LLM cannot reliably do all of this with transparency and consistency.
+
+A multi-agent architecture provides:
+
+✔ separation of responsibilities  
+✔ deterministic rule enforcement  
+✔ transparent reasoning  
+✔ safe medical boundary handling  
+✔ modularity and extensibility
+
+---
+
+## 🏗️ Architecture
+
+### High-Level Flow
+
+```
+User Input
+     ↓
+Orchestrator — intent & category detection
+     ↓
+Profile Manager — allergies / sensitivities / rules
+     ↓
+Domain Agent (food / cosmetics / household)
+     ↓
+Deterministic Scoring Engine
+     ↓
+Explainer Agent — user-friendly output
+     ↓
+Profile Update Agent — non-medical reactions
+```
 
 ### System Architecture Diagram
 
@@ -113,237 +169,148 @@ flowchart TB
 
 ### Agent Team
 
-**🔹 Orchestrator — `orchestrator_agent`**
-- Entry point for all user requests
-- Detects intent
-- Routes to onboarding, analysis, updates, or chat
-- Aggregates results and formats responses
+**🔹 Orchestrator**
 
-**🔹 Onboarding Specialist — `onboarding_agent`**
-- Collects structured profile data through guided dialogue
-- Allergies, sensitivities, dietary rules, skin/hair goals
-- Stores validated profiles via `save_onboarding_profile`
+* Classifies intent (analysis / onboarding / update / general)
+* Detects category (food / cosmetics / household)
+* Routes requests through the deterministic pipeline
+* Assembles the final response
 
-**🔹 Profile Manager — `profile_agent`**
-- Loads and saves long-term memory
-- Manages multi-level profile schema: food, cosmetics, household
-- Merges short-term and long-term context
+**🔹 Profile Manager**
 
-**🔹 Category-Specific Analysts**
-- `food_compatibility_agent`
-- `cosmetics_compatibility_agent`
-- `household_compatibility_agent`
+* Loads and normalizes user constraints
+* Maintains short-term memory of non-medical reactions
+* Enforces strict separation of food/cosmetics/household rules
 
-Each implements domain scoring logic:
-- **Food**: 50% safety · 30% sensitivity · 20% match
-- **Cosmetics**: 30% safety · 30% sensitivity · 40% match
-- **Household**: 40% safety · 30% sensitivity · 30% match
+**🔹 Domain Compatibility Agents**
 
-Outputs:
-- Safety score
-- Sensitivity score
-- Match score
-- Final FOR ME Score
-- Issues & warnings
+Each domain has its own logic and risk dictionaries.
 
-**🔹 Profile Update Specialist — `profile_update_agent`**
-- Detects user-reported reactions
-- Decides when to update long-term memory
-- Maintains `repeated_negative_reactions` and preferences
+* **Food Agent:** allergens, additives, traces, sugar alcohols
+* **Cosmetics Agent:** fragrances, surfactants, preservatives, alcohols
+* **Household Agent:** irritants, solvents, surfactants
 
-## ⭐ Core Tools & Utilities
+**🔹 Explainer Agent**
 
-**Ingredients Parser — `parse_ingredients`**
-- Multi-language normalization
-- Handles OCR noise
-- Converts raw messy text into clean ingredient lists
+Converts structured scoring into clear, human-friendly output: what triggered, why, how it affected the score.
 
-**Risk Dictionary — `get_ingredient_risks`**
-- Maps ingredients → risk tags
-- Used for safety and sensitivity scoring
+**🔹 Profile Update Agent**
 
-**Category Detection — `detect_product_category`**
-- Uses dictionaries, keyword counts, product hints
-- Ensures correct routing to domain agents
+Learns from user feedback like:
+* "this product made my skin feel tight"
+* "this snack upset my stomach"
 
-**Product Analysis Tools — A2A tools**
-- `analyze_food_product`
-- `analyze_cosmetics_product`
-- `analyze_household_product`
+(non-medical; constraints only)
 
-Each tool:
-1. Loads user profile
-2. Normalizes ingredients
-3. Retrieves risk tags
-4. Builds analysis context
-5. Computes domain scores
-6. Returns structured results
+---
 
-**Memory System — `memory.py`**
-- Full separation of long-term and short-term memory
-- Validations, defensive copying, type safety
-- Repeated reaction logic integrated into scoring
+## 🧮 How the FOR ME Score Works
 
-**Observability — `observability.py`**
-- Structured logging
-- Metrics
-- Request tracing
-- Token usage and latency tracking
+The system calculates three component scores, then combines them using category-specific weights.
 
-## ⭐ How It Works (Workflow)
+### Component Scores
 
-1. **User Input** — Ingredient text or image (OCR)
+* **Safety Score (0-100):** Based on strict avoidances (allergens, critical constraints)
+* **Sensitivity Score (0-100):** Based on prefer_avoid lists and irritants
+* **Match Score (0-100):** Based on positive ingredients and user goals
 
-2. **Intent Detection** — `ONBOARDING_REQUIRED` / `PRODUCT_ANALYSIS` / `PROFILE_UPDATE` / `SMALL_TALK`
+### Domain Weighting
 
-3. **Onboarding (if needed)** — Collect allergies, sensitivities, goals
+| Domain    | Safety | Sensitivity | Match | Rationale |
+| --------- | ------ | ----------- | ----- | ---------- |
+| **Food**  | 50%    | 30%         | 20%   | Safety is critical — allergens can be dangerous |
+| **Cosmetics** | 30% | 30%      | 40%   | Match matters more — does it fit your hair/skin goals? |
+| **Household** | 40% | 30%    | 30%   | Balanced approach — safety and effectiveness |
 
-4. **Category Detection** — `food` / `cosmetics` / `household`
+### Final Score Calculation
 
-5. **Product Analysis** — Domain agent computes safety, sensitivity, match, and final score
-
-6. **Explanation Formatting** — Friendly, structured breakdown
-
-7. **Profile Updates (optional)** — Reactions → structured long-term memory updates
-
-## ⭐ Value Statement
-
-FOR ME converts chaotic ingredient lists into personalized compatibility insights within seconds.
-
-The system:
-- Handles multi-language inputs
-- Applies domain rules
-- Learns from user feedback
-- Produces explainable scoring
-- Shows clear warnings and recommendations
-
-Users instantly understand:
-- whether a product fits their restrictions
-- why the score is what it is
-- what risks exist
-- and how to compare alternatives
-
-## ⭐ Installation
-
-This project was built against Python 3.11+.
-
-It is suggested you create a virtual environment using your preferred tooling (e.g., `venv`, `uv`).
-
-### 1. Create Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+FOR ME Score = (Safety × weight) + (Sensitivity × weight) + (Match × weight)
 ```
 
-### 2. Install Dependencies
+The score is capped at 15 for strict allergens, ensuring safety is prioritized.
+
+This makes scoring transparent, reproducible, and safe.
+
+---
+
+## 🛡️ Safety (Strictly Non-Medical)
+
+If the system detects medical content — symptoms, diagnoses, medications — it triggers **Safety Redirect**:
+
+* analysis stops
+* FOR ME gives a generic safe message
+* no medical inference is ever performed
+
+This is enforced at multiple levels:
+* Safety rules in every agent's instructions
+* Dedicated Safety Redirect path in orchestrator
+* Non-medical language in all outputs
+* Explicit disclaimers in responses
+
+---
+
+## 🚦 End-to-End Workflow
+
+1. User inputs ingredient text (or uploads photo for OCR)
+2. Orchestrator detects intent + category
+3. Parser normalizes multilingual text
+4. Domain agent applies risk rules
+5. Engine computes the FOR ME Score
+6. Explainer formats the output
+7. Memory updates non-medical reactions
+
+Simple for the user. Complex under the hood. Fully transparent.
+
+---
+
+## 🧱 Tech Stack
+
+* **LLM / Agents:** Gemini 2.5 Flash Lite + Google ADK
+* **Backend:** FastAPI
+* **Custom Tools:** parser, risk dictionary, scoring engine, OCR
+* **Memory:** in-app profile + short-term personalization
+* **Deployment:** Docker + Google Cloud Run
+* **Observability:** Structured logging, metrics, request tracing
+
+---
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Set API Key
-
-**Option 1: Using .env file (Recommended)**
+### Set API Key
 
 ```bash
-# Copy the template
+# Copy template
 cp .env.example .env
 
 # Edit .env and add your API key
 # GOOGLE_API_KEY=your-api-key-here
 ```
 
-**Option 2: Environment variable**
-
-```bash
-export GOOGLE_API_KEY='your-api-key-here'
-```
-
 Get API key: https://aistudio.google.com/app/api-keys
 
 > ⚠️ **Important**: Never commit `.env` file to git! It's already in `.gitignore`.
 
-### 4. Run the Server
+### Run the Server
 
 ```bash
 python main.py
 ```
 
-The server will start on `http://localhost:8080`
+Server starts on `http://localhost:8080`
 
-### Running Tests
-
-**Run the evaluation suite:**
-
-```bash
-python -m src.eval
-```
-
-**Run API tests:**
-
-```bash
-# Start server first
-python main.py
-
-# In another terminal
-python test_api.py
-```
-
-**Run bot tests:**
-
-```bash
-python test_bot.py
-```
-
-## Project Structure
-
-The project is organized as follows:
-
-*   `src/`: The main Python package for the system.
-    *   `system.py`: Defines the main `ForMeSystem` class and orchestrates all agents.
-    *   `memory.py`: Implements long-term and short-term memory management.
-    *   `observability.py`: Provides logging, metrics, and request tracing.
-    *   `eval.py`: Contains the evaluation framework for quality testing.
-    *   `types.py`: Defines common type aliases and TypedDict structures.
-    *   `agents/`: Contains the individual agents, each responsible for a specific task.
-        *   `orchestrator_agent.py`: Main coordinator that routes requests.
-        *   `onboarding_agent.py`: Collects user profile through structured dialogue.
-        *   `profile_agent.py`: Manages user profiles and memory.
-        *   `profile_update_agent.py`: Analyzes user statements and proposes profile updates.
-        *   `food_compatibility_agent.py`: Calculates compatibility scores for food products.
-        *   `cosmetics_compatibility_agent.py`: Calculates compatibility scores for cosmetics.
-        *   `household_compatibility_agent.py`: Calculates compatibility scores for household products.
-        *   `scoring_agent.py`: General scoring logic (legacy, category agents now handle scoring).
-        *   `explainer_agent.py`: Generates user-friendly explanations.
-        *   `category_tools.py`: Tools for category detection and product analysis.
-    *   `tools/`: Defines the custom tools used by the agents.
-        *   `ingredient_parser.py`: Parses raw ingredient text into normalized lists.
-        *   `risk_dictionary.py`: Maps ingredients to risk tags.
-        *   `category_dictionaries.py`: Category-specific keyword dictionaries.
-        *   `image_ocr.py`: OCR tool for extracting text from product images.
-*   `main.py`: FastAPI server entrypoint.
-*   `vertex_agent_entrypoint.py`: System initialization entrypoint for Cloud Run.
-*   `deploy_to_cloud_run.py`: Deployment script for Google Cloud Run.
-*   `tests/`: Contains unit tests and integration tests.
-*   `docs/`: Contains documentation files.
-    *   `ARCHITECTURE.md`: Detailed system architecture documentation.
-    *   `ARCHITECTURE_DIAGRAM.md`: Mermaid diagrams for system architecture.
-    *   `IMAGE_UPLOAD_GUIDE.md`: Guide for using image OCR feature.
-*   `API_REFERENCE.md`: Complete API documentation for all endpoints.
-
-## API Endpoints
-
-Once the server is running, you can use these endpoints:
-
-- `GET /health` - Health check
-- `GET /` - API information
-- `POST /chat` - Main chat endpoint (requires `X-User-Id` header)
-- `POST /analyze` - Legacy analysis endpoint
-- `POST /onboarding` - Start onboarding flow
-- `POST /chat/upload` - Upload image for OCR analysis
-
-**Example:**
+### Test It
 
 ```bash
 curl -X POST http://localhost:8080/chat \
@@ -358,15 +325,115 @@ curl -X POST http://localhost:8080/chat \
 
 **📖 For complete API documentation, see [API_REFERENCE.md](./API_REFERENCE.md)**
 
-## Documentation
+---
 
-- **[API Reference](./API_REFERENCE.md)** - Complete API documentation for all endpoints
-- **[Architecture](./docs/ARCHITECTURE.md)** - Detailed system architecture and design
-- **[Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAM.md)** - Mermaid diagrams for visualization
-- **[Image Upload Guide](./docs/IMAGE_UPLOAD_GUIDE.md)** - How to use image OCR feature
-- **[Unit Tests](./tests/README.md)** - Test suite documentation
+## 🔌 API Endpoints
 
-## Deployment
+### Main Endpoints
+
+* `POST /chat` — Main chat endpoint (requires `X-User-Id` header)
+* `POST /analyze` — Legacy analysis endpoint
+* `POST /onboarding` — Start onboarding flow
+* `POST /chat/upload` — Upload image for OCR analysis
+* `GET /health` — Health check
+
+### Example Request
+
+```bash
+POST /chat
+Headers:
+  X-User-Id: user_001
+Body:
+{
+  "message": "Analyze this product",
+  "ingredient_text": "aqua, glycerin, fragrance, parabens",
+  "product_domain": "cosmetics"
+}
+```
+
+### Example Response
+
+```json
+{
+  "status": "success",
+  "score": 45,
+  "category": "cosmetics",
+  "intent": "PRODUCT_ANALYSIS",
+  "issues": [
+    "Contains fragrance, which you've marked as a sensitivity",
+    "Contains parabens, which may cause reactions"
+  ],
+  "reply": "This product has a FOR ME Score of 45/100. It contains fragrance and parabens, which may not be suitable for your sensitive skin profile."
+}
+```
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+  system.py               # Main system orchestrator
+  memory.py               # Long-term/short-term memory
+  observability.py        # Logging and metrics
+  eval.py                 # Quality evaluation
+  types.py                # Type definitions
+  
+  agents/
+    orchestrator_agent.py      # Main coordinator
+    onboarding_agent.py         # Profile collection
+    profile_agent.py           # Profile management
+    profile_update_agent.py    # Reaction learning
+    food_compatibility_agent.py
+    cosmetics_compatibility_agent.py
+    household_compatibility_agent.py
+    explainer_agent.py
+    category_tools.py
+    
+  tools/
+    ingredient_parser.py
+    risk_dictionary.py
+    category_dictionaries.py
+    image_ocr.py
+
+main.py                   # FastAPI entrypoint
+tests/                    # Unit and integration tests
+docs/                     # Architecture documentation
+```
+
+---
+
+## 📚 Documentation
+
+* **[API Reference](./API_REFERENCE.md)** - Complete API documentation
+* **[Architecture](./docs/ARCHITECTURE.md)** - Detailed system design
+* **[Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAM.md)** - Mermaid diagrams
+* **[Image Upload Guide](./docs/IMAGE_UPLOAD_GUIDE.md)** - OCR feature guide
+* **[Unit Tests](./tests/README.md)** - Test suite documentation
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run evaluation suite
+python -m src.eval
+
+# Run API tests (start server first)
+python main.py
+# In another terminal:
+python test_api.py
+
+# Run bot tests
+python test_bot.py
+
+# Run unit tests with coverage
+pytest tests/ --cov=src --cov-report=html
+```
+
+---
+
+## 🚀 Deployment
 
 ### Cloud Run
 
@@ -381,27 +448,71 @@ docker build -t for-me-agent .
 docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 ```
 
-## Course Concepts Used
+---
 
-This project demonstrates:
+## 🎓 Course Concepts Demonstrated
 
-- ✅ **Multi-Agent System** — 10 specialized agents working together
-- ✅ **Agent-as-a-Tool (A2A)** — Orchestration pattern for agent composition
-- ✅ **Tools** — Custom function tools (parser, risk dictionary, OCR)
-- ✅ **Sessions & Memory** — Explicit long-term/short-term memory separation
-- ✅ **Context Engineering** — Structured context building for agents
-- ✅ **Observability** — Logging, metrics, and request tracing
-- ✅ **Evaluation** — Behavioral quality gate for regression testing
-- ✅ **Model & Tools Layer** — Gemini API + structured tools integration
+This project showcases core concepts from the **5-Day AI Agents Intensive**:
 
-## License
+✅ **Multi-Agent System** — 10+ specialized agents working together  
+✅ **Agent-as-a-Tool (A2A)** — Agents invoked as tools for composable workflows  
+✅ **Custom Tools** — Parser, risk dictionary, category detection, OCR  
+✅ **Sessions & Memory** — Explicit long-term/short-term memory separation  
+✅ **Context Engineering** — Structured context building for agents  
+✅ **Observability** — Logging, metrics, and request tracing  
+✅ **Agent Deployment** — Production-ready API on Google Cloud Run  
+✅ **Type Safety** — Full type hints and TypedDict structures  
+
+---
+
+## 🧩 Competition Context — Why This Fits Concierge Agents
+
+FOR ME is built for everyday decisions, not medical or enterprise use. It solves a real consumer pain:
+
+**"Is this product actually good for me?"**
+
+The project demonstrates:
+
+* multi-agent routing
+* tool use
+* deterministic domain logic
+* explainability
+* safety governance
+* memory
+* real deployment
+
+Exactly what the **Concierge Agents** category was created for.
+
+---
+
+## 🏁 Final Thought
+
+Most people don't read ingredient lists.
+
+Not because they don't care — but because the information wasn't designed for them.
+
+FOR ME reads it for you.
+
+And gives you something no label ever does:
+
+**clarity, personalized.**
+
+---
+
+## 📝 License
 
 This project was created for educational purposes as part of the "5-Day AI Agents Intensive" course.
 
-## Acknowledgments
+---
+
+## 🙏 Acknowledgments
 
 Built with:
-- Google Agent Development Kit (ADK)
-- Gemini API
-- FastAPI
-- Google Cloud Run
+* Google Agent Development Kit (ADK)
+* Gemini API
+* FastAPI
+* Google Cloud Run
+
+---
+
+*Built with ❤️ for the 5-Day AI Agents Intensive Capstone*
