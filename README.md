@@ -1,101 +1,229 @@
-# Project Overview - FOR ME
+# ⭐ Project Overview — FOR ME
 
-**FOR ME** is a production-grade multi-agent system that transforms ingredient lists (cosmetics, food, household products) into personalized compatibility scores for individual users. The system analyzes products and provides a **FOR ME Score (0–100%)** — a compatibility assessment based on user allergies, sensitivities, goals, and domain-specific rules.
+**FOR ME** is a production-grade, multi-agent AI system that transforms raw ingredient lists (cosmetics, food, household products) into personalized compatibility scores.
 
-**Important:** The system is NOT medical — it provides compatibility assessments based on data that users themselves provide.
+The core output — the **FOR ME Score (0–100%)** — reflects how well a product fits an individual user's allergies, sensitivities, and personal constraints.
+
+**⚠️ Important:** FOR ME is not a medical system. All recommendations are based solely on user-provided data and non-medical domain rules.
 
 ![Architecture](./docs/ARCHITECTURE_DIAGRAM.md "FOR ME System Architecture")
 
-## Problem Statement
+## ⭐ Problem Statement
 
-Understanding product compatibility is challenging because ingredient lists are long, multi-language, and confusing. Most solutions provide generic advice that doesn't account for individual differences. Every person has unique allergies, sensitivities, dietary rules, and product preferences. Manually checking every ingredient against personal constraints is time-consuming, error-prone, and mentally exhausting. Users need a personalized system that can instantly analyze any product composition and answer one simple question: **"Is this good for *me*?"**
+Ingredient lists are:
+- **long**
+- **multi-language**
+- **inconsistent**
+- and extremely confusing for the average user
 
-## Solution Statement
+Most existing tools give generic advice, ignoring:
+- allergies
+- personal sensitivities
+- dietary restrictions
+- skin/hair needs
+- household safety preferences
 
-FOR ME uses a multi-agent system to automatically parse ingredient lists, detect product categories, analyze risks against user profiles, and generate personalized compatibility scores. Agents can handle multi-language ingredient lists, route products to category-specific analysis engines (food, cosmetics, household), apply domain-specific scoring rules, and provide clear, non-medical explanations. The system learns from user feedback and adjusts future scores based on repeated negative reactions, transforming product analysis from a manual, error-prone process into an instant, personalized compatibility assessment.
+Manually checking ingredients is:
+- time-consuming
+- error-prone
+- exhausting — especially when managing multiple products
 
-## Architecture
+Users need a system that can instantly answer: **"Is this good for me?"**
 
-Core to FOR ME is the **OrchestratorAgent** — a prime example of a multi-agent system. It's not a monolithic application but an ecosystem of specialized agents, each contributing to a different stage of the product analysis process. This modular approach, facilitated by Google's Agent Development Kit, allows for sophisticated and robust workflows.
+## ⭐ Solution Statement
 
-![Architecture](./docs/ARCHITECTURE_DIAGRAM.md "FOR ME Multi-Agent Architecture")
+FOR ME is a multi-agent analysis system that:
+- Parses multi-language ingredient lists
+- Detects product categories
+- Evaluates risks against user profiles
+- Computes domain-specific safety, sensitivity, and match scores
+- Generates a fully explainable FOR ME Score
+- Learns from repeated negative reactions
+- Provides user-friendly, non-medical explanations
 
-The **OrchestratorAgent** is constructed using the `LlmAgent` class from the Google ADK. Its definition highlights several key parameters: the `name`, the `model` it uses for reasoning capabilities (Gemini 2.5 Flash Lite), and detailed `instruction` sets that govern its behavior. Crucially, it also defines the `tools` it has at its disposal and the routing logic for delegating tasks to specialized agents.
+This turns manual ingredient evaluation into an instant, structured, personalized decision.
 
-The real power of FOR ME lies in its team of specialized agents, each an expert in its domain.
+## ⭐ Architecture Overview
 
-**Orchestrator: `orchestrator_agent`**
+FOR ME is built on a modular multi-agent architecture using the Google Agent Development Kit (ADK).
 
-This agent is the main coordinator responsible for detecting user intent, routing requests to appropriate agents, aggregating results, and formatting user-friendly responses. It always calls `detect_intent` as a tool to determine whether the user wants product analysis, profile updates, onboarding, or general chat. For product analysis, it routes through category detection to the appropriate compatibility agent.
+The system is coordinated by the **OrchestratorAgent**, which routes requests, manages profiles, and composes final outputs.
 
-**Onboarding Specialist: `onboarding_agent`**
+### System Architecture Diagram
 
-This agent collects user profiles through structured dialogue. It asks about allergies, sensitivities, dietary rules, and product preferences in a friendly, non-medical way. Once enough information is gathered, it calls `save_onboarding_profile` to store the structured profile data.
+```mermaid
+flowchart TB
+    U[User] --> API[FastAPI]
+    API --> EP1[/chat/]
+    API --> EP2[/upload/]
+    EP1 --> SYS[System]
+    EP2 --> OCR[OCR]
+    OCR --> EP1
+    EP2 --> SYS
+    SYS --> ORCH[Orchestrator]
+    SYS --> SESS[Session]
+    ORCH --> INT[Intent]
+    INT --> PROF{Profile?}
+    PROF -->|No| ONB[Onboarding]
+    PROF -->|Yes| CAT[Category]
+    CAT --> PARSE[Parse]
+    PARSE --> CATEG{Type?}
+    CATEG -->|food| FOOD[Food]
+    CATEG -->|cosmetics| COSM[Cosmetics]
+    CATEG -->|household| HOUSE[Household]
+    FOOD --> RISKS[Risks]
+    COSM --> RISKS
+    HOUSE --> RISKS
+    RISKS --> CTX[Context]
+    CTX --> SCORE[Scoring]
+    SCORE --> SAFE[Safety]
+    SCORE --> SENS[Sensitivity]
+    SCORE --> MATCH[Match]
+    SAFE --> FINAL[FOR ME Score]
+    SENS --> FINAL
+    MATCH --> FINAL
+    ORCH --> MEM[Memory]
+    FOOD --> MEM
+    COSM --> MEM
+    HOUSE --> MEM
+    ONB --> MEM
+    ORCH --> GEM[Gemini]
+    ONB --> GEM
+    FINAL --> RESP[Response]
+    RESP --> U
+    
+    classDef user fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef api fill:#fff4e1,stroke:#e65100,stroke-width:2px
+    classDef core fill:#ffe1f5,stroke:#880e4f,stroke-width:3px
+    classDef agent fill:#e1ffe1,stroke:#1b5e20,stroke-width:2px
+    classDef tool fill:#e1e1ff,stroke:#0d47a1,stroke-width:2px
+    classDef memory fill:#fff9e1,stroke:#f57f17,stroke-width:2px
+    classDef external fill:#f5e1ff,stroke:#4a148c,stroke-width:2px
+    classDef output fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px
+    
+    class U user
+    class API,EP1,EP2 api
+    class SYS,ORCH,INT core
+    class ONB,FOOD,COSM,HOUSE agent
+    class PARSE,RISKS,CAT,CTX,SCORE tool
+    class MEM,SESS memory
+    class GEM,OCR external
+    class FINAL,RESP output
+```
 
-**Profile Manager: `profile_agent`**
+### Agent Team
 
-The profile agent manages user profiles using long-term and short-term memory. It loads existing profiles, saves updates, and ensures data consistency. It handles the rich, multi-level profile schema including food-specific fields (`food_strict_avoid`, `food_prefer_avoid`), cosmetics-specific fields (`cosmetics_sensitivities`, `hair_type`, `skin_goals`), and household-specific fields.
+**🔹 Orchestrator — `orchestrator_agent`**
+- Entry point for all user requests
+- Detects intent
+- Routes to onboarding, analysis, updates, or chat
+- Aggregates results and formats responses
 
-**Category-Specific Analysts: `food_compatibility_agent`, `cosmetics_compatibility_agent`, `household_compatibility_agent`**
+**🔹 Onboarding Specialist — `onboarding_agent`**
+- Collects structured profile data through guided dialogue
+- Allergies, sensitivities, dietary rules, skin/hair goals
+- Stores validated profiles via `save_onboarding_profile`
 
-These agents are experts in their respective domains. Each implements domain-specific scoring logic:
-- **Food Agent**: Strict safety rules (50% weight on safety, 30% sensitivity, 20% match)
-- **Cosmetics Agent**: Soft recommendations (30% safety, 30% sensitivity, 40% match)
-- **Household Agent**: Balanced approach (40% safety, 30% sensitivity, 30% match)
+**🔹 Profile Manager — `profile_agent`**
+- Loads and saves long-term memory
+- Manages multi-level profile schema: food, cosmetics, household
+- Merges short-term and long-term context
 
-Each agent calculates Safety, Sensitivity, and Match scores based on ingredient risks, user profile constraints, and positive ingredient matches.
+**🔹 Category-Specific Analysts**
+- `food_compatibility_agent`
+- `cosmetics_compatibility_agent`
+- `household_compatibility_agent`
 
-**Profile Update Specialist: `profile_update_agent`**
+Each implements domain scoring logic:
+- **Food**: 50% safety · 30% sensitivity · 20% match
+- **Cosmetics**: 30% safety · 30% sensitivity · 40% match
+- **Household**: 40% safety · 30% sensitivity · 30% match
 
-This agent analyzes user statements about reactions and sensitivities. It decides whether information is stable enough to go into long-term memory and proposes structured updates to the profile, such as adding to `repeated_negative_reactions` or updating category-specific sensitivity lists.
+Outputs:
+- Safety score
+- Sensitivity score
+- Match score
+- Final FOR ME Score
+- Issues & warnings
 
-## Essential Tools and Utilities
+**🔹 Profile Update Specialist — `profile_update_agent`**
+- Detects user-reported reactions
+- Decides when to update long-term memory
+- Maintains `repeated_negative_reactions` and preferences
 
-The FOR ME system and its agents are equipped with a variety of tools to perform their tasks effectively.
+## ⭐ Core Tools & Utilities
 
-**Ingredient Parser (`parse_ingredients`)**
+**Ingredients Parser — `parse_ingredients`**
+- Multi-language normalization
+- Handles OCR noise
+- Converts raw messy text into clean ingredient lists
 
-This tool parses raw ingredient text (which may be multi-language, poorly formatted, or contain OCR errors) into a normalized list of ingredient names. It handles common separators, removes extra whitespace, and normalizes ingredient names for consistent matching.
+**Risk Dictionary — `get_ingredient_risks`**
+- Maps ingredients → risk tags
+- Used for safety and sensitivity scoring
 
-**Risk Dictionary (`get_ingredient_risks`)**
+**Category Detection — `detect_product_category`**
+- Uses dictionaries, keyword counts, product hints
+- Ensures correct routing to domain agents
 
-This tool maps normalized ingredient names to risk tags (e.g., "fragrance", "high_salt", "drying_alcohol", "harsh_surfactant"). It provides structured risk information that agents use to calculate sensitivity scores and generate safety issues.
+**Product Analysis Tools — A2A tools**
+- `analyze_food_product`
+- `analyze_cosmetics_product`
+- `analyze_household_product`
 
-**Category Detection (`detect_product_category`)**
+Each tool:
+1. Loads user profile
+2. Normalizes ingredients
+3. Retrieves risk tags
+4. Builds analysis context
+5. Computes domain scores
+6. Returns structured results
 
-This tool determines whether a product belongs to the food, cosmetics, or household category. It first checks for explicit domain hints, then parses ingredients and counts keyword matches across category-specific dictionaries. This ensures products are routed to the correct compatibility agent.
+**Memory System — `memory.py`**
+- Full separation of long-term and short-term memory
+- Validations, defensive copying, type safety
+- Repeated reaction logic integrated into scoring
 
-**Product Analysis Tools (`analyze_food_product`, `analyze_cosmetics_product`, `analyze_household_product`)**
+**Observability — `observability.py`**
+- Structured logging
+- Metrics
+- Request tracing
+- Token usage and latency tracking
 
-These tools implement the agent-as-a-tool (A2A) pattern. Each tool:
-1. Loads the user profile from long-term memory
-2. Parses and normalizes the ingredient list
-3. Gets risk mappings from the risk dictionary
-4. Builds structured context for the compatibility agent
-5. Calculates scores using category-specific logic
-6. Returns structured results with scores and issues
+## ⭐ How It Works (Workflow)
 
-**Memory System (`memory.py`)**
+1. **User Input** — Ingredient text or image (OCR)
 
-The memory system separates long-term (user profile) and short-term (session context) memory. It uses `deepcopy` to prevent shared mutable state, validates profile completeness, and applies repeated negative reactions to scores. The system ensures that profile updates are type-safe and that minimal profiles trigger onboarding flows.
+2. **Intent Detection** — `ONBOARDING_REQUIRED` / `PRODUCT_ANALYSIS` / `PROFILE_UPDATE` / `SMALL_TALK`
 
-**Observability (`observability.py`)**
+3. **Onboarding (if needed)** — Collect allergies, sensitivities, goals
 
-The observability system provides enterprise-grade logging, metrics, and request tracing. It tracks tool calls, latencies, token usage, and request flows. All logs are ASCII-safe and include defensive copying to prevent shared mutation issues.
+4. **Category Detection** — `food` / `cosmetics` / `household`
 
-## Conclusion
+5. **Product Analysis** — Domain agent computes safety, sensitivity, match, and final score
 
-The beauty of FOR ME lies in its modular, category-aware workflow. The OrchestratorAgent acts as a project manager, coordinating the efforts of its specialized team. It delegates tasks based on product category, gathers user feedback, and ensures that each stage of the analysis process is completed successfully. This multi-agent coordination, powered by the Google ADK, results in a system that is modular, reusable, and scalable.
+6. **Explanation Formatting** — Friendly, structured breakdown
 
-FOR ME is a compelling demonstration of how multi-agent systems, built with powerful frameworks like Google's Agent Development Kit, can tackle complex, real-world problems. By breaking down the process of product compatibility analysis into a series of manageable tasks and assigning them to specialized agents, it creates a workflow that is both efficient and robust.
+7. **Profile Updates (optional)** — Reactions → structured long-term memory updates
 
-## Value Statement
+## ⭐ Value Statement
 
-FOR ME transforms raw ingredient lists into personalized compatibility insights in seconds, eliminating the need for manual ingredient checking. The system handles multi-language ingredient lists, applies domain-specific scoring rules, and learns from user feedback to improve accuracy over time. Users can instantly compare products, understand risks, and make informed decisions based on their personal profile.
+FOR ME converts chaotic ingredient lists into personalized compatibility insights within seconds.
 
-If I had more time, I would add an agent to scan product databases and automatically update ingredient risk dictionaries based on new research. This would require integrating with external APIs or building custom web scraping tools.
+The system:
+- Handles multi-language inputs
+- Applies domain rules
+- Learns from user feedback
+- Produces explainable scoring
+- Shows clear warnings and recommendations
 
-## Installation
+Users instantly understand:
+- whether a product fits their restrictions
+- why the score is what it is
+- what risks exist
+- and how to compare alternatives
+
+## ⭐ Installation
 
 This project was built against Python 3.11+.
 
@@ -203,55 +331,6 @@ The project is organized as follows:
     *   `ARCHITECTURE_DIAGRAM.md`: Mermaid diagrams for system architecture.
     *   `IMAGE_UPLOAD_GUIDE.md`: Guide for using image OCR feature.
 *   `API_REFERENCE.md`: Complete API documentation for all endpoints.
-
-## Workflow
-
-The FOR ME system follows this workflow:
-
-1.  **User Input**: User sends a message with ingredient text (or uploads an image for OCR).
-
-2.  **Intent Detection**: The OrchestratorAgent calls `detect_intent` to determine user intent:
-    - `ONBOARDING_REQUIRED`: User needs to complete profile setup
-    - `PRODUCT_ANALYSIS`: User wants to analyze a product
-    - `PROFILE_UPDATE`: User wants to update their profile
-    - `REACTIONS_AND_PREFERENCES`: User describes reactions or preferences
-    - `SMALL_TALK`: General questions about the system
-
-3.  **Onboarding (if needed)**: If the profile is incomplete, the OnboardingAgent collects:
-    - Allergies and strict avoidances
-    - Sensitivities and preferences
-    - Goals (hydration, avoiding salt, etc.)
-    - Optional health notes (non-medical)
-
-4.  **Category Detection**: For product analysis, the system calls `detect_product_category`:
-    - Checks explicit domain hint
-    - Parses ingredients
-    - Counts keyword matches
-    - Determines category (food, cosmetics, household)
-
-5.  **Product Analysis**: Routes to the appropriate analysis tool:
-    - `analyze_food_product` → FoodCompatibilityAgent
-    - `analyze_cosmetics_product` → CosmeticsCompatibilityAgent
-    - `analyze_household_product` → HouseholdCompatibilityAgent
-
-6.  **Score Calculation**: Each category agent:
-    - Loads user profile from memory
-    - Parses ingredients using `parse_ingredients`
-    - Gets risks using `get_ingredient_risks`
-    - Calculates Safety, Sensitivity, and Match scores
-    - Applies repeated negative reactions penalties
-    - Computes final FOR ME Score using category-specific weights
-
-7.  **Response Formatting**: The OrchestratorAgent formats the response:
-    - Single FOR ME Score (0-100)
-    - Combined issues list (safety + sensitivity)
-    - Category and intent
-    - User-friendly explanation
-
-8.  **Profile Updates**: If the user describes reactions, the ProfileUpdateAgent:
-    - Analyzes the statement
-    - Proposes structured updates
-    - Updates `repeated_negative_reactions` or category-specific fields
 
 ## API Endpoints
 
