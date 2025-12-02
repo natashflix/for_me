@@ -1,302 +1,245 @@
-# ⭐ FOR ME — Personalized Ingredient Intelligence
+# ⭐ **FOR ME — Personalized Ingredient Intelligence**
 
-*A production-grade multi-agent system for real-world compatibility analysis*
+A production-grade multi-agent system for real-world compatibility analysis.
 
 ---
 
 ## 💔 The Moment That Inspired This Project
 
-Most people genuinely try to choose the right product — but ingredient lists make it almost impossible.
+Most people genuinely try to choose the right product — but ingredient lists make that nearly impossible.
 
-A person buys a "gentle, nourishing" cream… only to discover drying alcohols hidden halfway down the INCI list.
+A person buys a "gentle" cream… only to discover hidden drying alcohols halfway down the INCI list.
 
-Someone picks a protein bar with a clean-looking label… and misses the tiny "may contain traces of nuts" line blended into the packaging.
+Someone picks a "clean" protein bar… and misses the tiny "may contain traces of nuts" line hidden in the folds of the packaging.
 
-Someone with curly hair trusts a shampoo "for all hair types"… and ends up with dry, stripped strands — because the formula is loaded with sulfates.
+Someone with curly hair uses a shampoo "for all hair types"… and winds up with dry, stripped strands because the formula is full of sulfates.
 
-Another person chooses a dish soap marketed as "safe for sensitive skin"… and reacts immediately to a preservative buried deep in the ingredient list.
+Someone buys a dish soap marketed as "safe for sensitive skin"… but reacts immediately to a buried preservative.
 
-None of these are bad decisions. The information people *need* is there — just not in a form designed for humans.
+**No one made a bad decision.**
+
+The information people need is there — just not in a form designed for humans.
 
 ---
 
 ## 🌟 What FOR ME Does
 
-FOR ME analyzes ingredient lists from **food, cosmetics, and household products** and transforms them into a **personalized FOR ME Score (0–100)** with clear, rule-based explanations.
+FOR ME transforms ingredient lists from **food, cosmetics, and household products** into a personalized **FOR ME Score (0–100)** with clear, rule-based explanations.
 
-It turns long, inconsistent, multilingual ingredient text into:
+It turns raw, inconsistent, multilingual ingredient text into:
 
-* a compatibility score tailored to the individual
-* transparent reasoning
+* a personalized compatibility score
+* transparent, reproducible reasoning
 * ingredient-level insights
-* non-medical, safe personalization
+* strictly non-medical recommendations
 
-FOR ME does **not** analyze diseases, symptoms, or treatments. It is strictly a **consumer compatibility agent**, not a medical system.
+FOR ME does **not** analyze diseases, symptoms, or treatments. It is a **consumer safety & compatibility agent**, not a medical system.
 
-### Multimodal Input
+---
 
-FOR ME already supports both **raw text** (copy-pasted ingredient lists) and **label photos** via Gemini Vision OCR. Users can upload a product photo, the system extracts the ingredient text, and the same multi-agent pipeline runs on top of it.
+## 📸 Multimodal Input (Already Supported)
+
+Users can:
+
+* **paste ingredient text**, or
+* **upload a product photo** — FOR ME extracts ingredients via **Gemini Vision OCR**.
+
+Both inputs run through the same multi-agent pipeline.
 
 ---
 
 ## 🎯 Mission
 
-FOR ME exists to protect people from hidden risks in everyday products — cosmetics, food, and household chemicals. The system translates raw ingredient lists into clear, personalized compatibility insights so that people with allergies and sensitivities can make safe, confident choices in seconds.
+FOR ME exists to protect people from hidden risks in everyday products — cosmetics, food, and household chemicals.
+
+It makes personalized, safe decisions possible **in seconds** for people with allergies, sensitivities, and ingredient-related reactions.
 
 ---
 
-## 🎯 Why Ingredient Lists Matter (But Nobody Reads Them)
+## 🔍 Why Ingredient Lists Are Hard
 
 Ingredient lists are:
 
 * long
-* multi-language
+* multilingual
 * inconsistent
-* full of synonyms
-* and written for compliance, not clarity
+* full of synonyms and chemical naming variations
+* written for regulatory compliance, not for consumers
 
-### Why This Matters
+And yet, consumers must make personal choices based on them.
 
-Manually checking ingredients usually takes **5–12 minutes per product**, and people still miss small-print risks like traces of nuts, aggressive surfactants, or preservatives.
+---
 
-FOR ME reduces this to **under 1 second**, with a deterministic scoring engine and explicit rule-based checks for allergies, sensitivities, and risk levels.
+## ⏱ Why This Matters
 
-**From 5–12 minutes of manual scanning → to <1 second with FOR ME.**
+Manual ingredient checking usually takes **5–12 minutes per product**, and people still miss small-print risks: allergens, irritants, preservatives, surfactants, sugar alcohols, fragrances.
 
-Marketing promises simplicity:
+**FOR ME reduces this process to <1 second**, using:
 
-**"For all skin types."**
+* deterministic scoring,
+* rule-based risk detection,
+* personal constraints,
+* robust QA validation.
 
-**"Gentle."**
+**From 5–12 minutes → to <1 second.**
 
-**"Clean."**
+Marketing may promise "gentle" or "for all skin types," but compatibility is personal.
 
-**"Safe for sensitive skin."**
-
-But real compatibility is personal: your skin, your digestion, your allergies, your sensitivities, your reactions.
-
-FOR ME reads what marketing doesn't say — and shows whether a product is good for **you**.
+FOR ME reads what marketing doesn't say — and reveals whether a product is genuinely good *for you*.
 
 ---
 
 ## 🧠 Why a Multi-Agent System?
 
-Ingredient analysis is not a single task — it is a pipeline:
+Ingredient analysis is a **pipeline**, not a single task:
 
-* parsing multilingual input
+* multilingual parsing
 * category detection
-* profile-aware constraints
+* constraint enforcement
 * deterministic scoring
 * safety routing
 * explanation generation
-* short-term personalization
+* personalization & memory
 
-One LLM cannot reliably do all of this with transparency and consistency.
+One LLM cannot handle all of this reliably, consistently, and safely.
 
-A multi-agent architecture provides:
+A multi-agent system ensures:
 
 ✔ separation of responsibilities  
 ✔ deterministic rule enforcement  
 ✔ transparent reasoning  
-✔ safe medical boundary handling  
-✔ modularity and extensibility
+✔ medical safety boundaries  
+✔ modularity & extensibility
 
 ---
 
 ## 🏗️ Architecture
 
-### High-Level Flow
+### **High-Level Flow**
 
 ```
-User Input
-     ↓
-Orchestrator — intent & category detection
-     ↓
-Profile Manager — allergies / sensitivities / rules
-     ↓
-Domain Agent (food / cosmetics / household)
-     ↓
-Deterministic Scoring Engine
-     ↓
-Explainer Agent — user-friendly output
-     ↓
-Profile Update Agent — non-medical reactions
+User Input → Orchestrator → Profile Manager → Domain Agent → Scoring Engine → Explainer Agent → Profile Update
 ```
 
-### System Architecture Diagram
+### **Agent Team**
 
-```mermaid
-flowchart TB
-    U[User] --> API[FastAPI]
-    API --> EP1[/chat/]
-    API --> EP2[/upload/]
-    EP1 --> SYS[System]
-    EP2 --> OCR[OCR]
-    OCR --> EP1
-    EP2 --> SYS
-    SYS --> ORCH[Orchestrator]
-    SYS --> SESS[Session]
-    ORCH --> INT[Intent]
-    INT --> PROF{Profile?}
-    PROF -->|No| ONB[Onboarding]
-    PROF -->|Yes| CAT[Category]
-    CAT --> PARSE[Parse]
-    PARSE --> CATEG{Type?}
-    CATEG -->|food| FOOD[Food]
-    CATEG -->|cosmetics| COSM[Cosmetics]
-    CATEG -->|household| HOUSE[Household]
-    FOOD --> RISKS[Risks]
-    COSM --> RISKS
-    HOUSE --> RISKS
-    RISKS --> CTX[Context]
-    CTX --> SCORE[Scoring]
-    SCORE --> SAFE[Safety]
-    SCORE --> SENS[Sensitivity]
-    SCORE --> MATCH[Match]
-    SAFE --> FINAL[FOR ME Score]
-    SENS --> FINAL
-    MATCH --> FINAL
-    ORCH --> MEM[Memory]
-    FOOD --> MEM
-    COSM --> MEM
-    HOUSE --> MEM
-    ONB --> MEM
-    ORCH --> GEM[Gemini]
-    ONB --> GEM
-    FINAL --> RESP[Response]
-    RESP --> U
-    
-    classDef user fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef api fill:#fff4e1,stroke:#e65100,stroke-width:2px
-    classDef core fill:#ffe1f5,stroke:#880e4f,stroke-width:3px
-    classDef agent fill:#e1ffe1,stroke:#1b5e20,stroke-width:2px
-    classDef tool fill:#e1e1ff,stroke:#0d47a1,stroke-width:2px
-    classDef memory fill:#fff9e1,stroke:#f57f17,stroke-width:2px
-    classDef external fill:#f5e1ff,stroke:#4a148c,stroke-width:2px
-    classDef output fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px
-    
-    class U user
-    class API,EP1,EP2 api
-    class SYS,ORCH,INT core
-    class ONB,FOOD,COSM,HOUSE agent
-    class PARSE,RISKS,CAT,CTX,SCORE tool
-    class MEM,SESS memory
-    class GEM,OCR external
-    class FINAL,RESP output
-```
+#### 🔹 **Orchestrator**
 
-### Agent Team
+* Detects intent (analysis / onboarding / update)
+* Identifies category (food / cosmetics / household)
+* Routes through the deterministic pipeline
+* Assembles the final output
 
-**🔹 Orchestrator**
+#### 🔹 **Profile Manager**
 
-* Classifies intent (analysis / onboarding / update / general)
-* Detects category (food / cosmetics / household)
-* Routes requests through the deterministic pipeline
-* Assembles the final response
+* Loads allergies, sensitivities, user constraints
+* Manages short-term memory (non-medical reactions)
+* Enforces domain-specific rules
 
-**🔹 Profile Manager**
+#### 🔹 **Domain Compatibility Agents**
 
-* Loads and normalizes user constraints
-* Maintains short-term memory of non-medical reactions
-* Enforces strict separation of food/cosmetics/household rules
+Each domain uses its own logic and risk dictionaries.
 
-**🔹 Domain Compatibility Agents**
-
-Each domain has its own logic and risk dictionaries.
-
-* **Food Agent:** allergens, additives, traces, sugar alcohols
-* **Cosmetics Agent:** fragrances, surfactants, preservatives, alcohols
+* **Food Agent:** allergens, traces, additives, sugar alcohols
+* **Cosmetics Agent:** fragrances, preservatives, surfactants, alcohols
 * **Household Agent:** irritants, solvents, surfactants
 
-**🔹 Explainer Agent**
+#### 🔹 **Explainer Agent**
 
-Converts structured scoring into clear, human-friendly output: what triggered, why, how it affected the score.
+Turns structured scoring into human-friendly output.
 
-FOR ME can return different explanation modes for the same product:
+Supports three explanation modes:
 
-* **Short Summary** – a single sentence with the FOR ME Score and main reason (e.g., "Good match for sensitive skin, but contains fragrance").
-* **Detailed Breakdown** – bullet points for allergies, sensitivities, and high-risk ingredients.
-* **Technical View** – a more structured, "science-style" breakdown of risk rules and scoring contributions.
+1. **Short Summary** — one-sentence insight
+2. **Detailed Breakdown** — bullet points for risks & triggers
+3. **Technical View** — structured, rule-based scoring trace
 
-**🔹 Profile Update Agent**
+#### 🔹 **Profile Update Agent**
 
-Learns from user feedback like:
-* "this product made my skin feel tight"
-* "this snack upset my stomach"
+Learns non-medical feedback such as:
 
-(non-medical; constraints only)
+* "Made my skin feel tight"
+* "This snack upset my stomach"
 
-### Ingredient QA Loop (Hallucination Control)
+Used only to adjust user constraints.
 
-Before computing the final FOR ME Score, the system runs an internal QA loop:
+---
 
-* detects duplicate ingredients,
-* flags unknown or unparsed tokens,
-* cross-checks all ingredients against the user's allergy & sensitivity profile,
-* applies category-specific risk rules (e.g., different thresholds for food vs skincare vs household products).
+## 🔎 Ingredient QA Loop (Hallucination Control)
 
-This makes the scoring more robust and reduces the chance of "LLM hallucinations" in risk explanations.
+Before scoring, FOR ME performs a QA pass:
+
+* detects duplicate ingredients
+* flags unknown tokens
+* cross-checks all ingredients against user allergies & sensitivities
+* applies domain-specific risk rules
+
+This reduces hallucinations and ensures robust, deterministic scoring.
 
 ---
 
 ## 🧮 How the FOR ME Score Works
 
-The system calculates three component scores, then combines them using category-specific weights.
+### **Component Scores**
 
-### Component Scores
+* **Safety (0–100)** — strict avoidances, allergens, critical risks
+* **Sensitivity (0–100)** — irritants, reactives, "prefer-avoid" lists
+* **Match (0–100)** — beneficial ingredients and personal goals
 
-* **Safety Score (0-100):** Based on strict avoidances (allergens, critical constraints)
-* **Sensitivity Score (0-100):** Based on prefer_avoid lists and irritants
-* **Match Score (0-100):** Based on positive ingredients and user goals
+### **Domain Weighting**
 
-### Domain Weighting
+| Domain    | Safety | Sensitivity | Match | Rationale                             |
+| --------- | ------ | ----------- | ----- | ------------------------------------- |
+| Food      | 50%    | 30%         | 20%   | Allergens can be dangerous            |
+| Cosmetics | 30%    | 30%         | 40%   | "Does this fit your hair/skin goals?" |
+| Household | 40%    | 30%         | 30%   | Safety + effectiveness                |
 
-| Domain    | Safety | Sensitivity | Match | Rationale |
-| --------- | ------ | ----------- | ----- | ---------- |
-| **Food**  | 50%    | 30%         | 20%   | Safety is critical — allergens can be dangerous |
-| **Cosmetics** | 30% | 30%      | 40%   | Match matters more — does it fit your hair/skin goals? |
-| **Household** | 40% | 30%    | 30%   | Balanced approach — safety and effectiveness |
-
-### Final Score Calculation
+### **Final Score**
 
 ```
 FOR ME Score = (Safety × weight) + (Sensitivity × weight) + (Match × weight)
 ```
 
-The score is capped at 15 for strict allergens, ensuring safety is prioritized.
+### **Safety-First Rule**
 
-This makes scoring transparent, reproducible, and safe.
+Strict allergens **cap the maximum score at 15/100**, ensuring a safety-first approach.
 
 ---
 
-## 🛡️ Safety (Strictly Non-Medical)
+## 🛡️ Non-Medical Safety
 
-If the system detects medical content — symptoms, diagnoses, medications — it triggers **Safety Redirect**:
+If user input contains medical content (symptoms, diagnoses, treatments):
 
 * analysis stops
-* FOR ME gives a generic safe message
-* no medical inference is ever performed
+* the system triggers **Safety Redirect**
+* FOR ME gives a safe, general response
 
-This is enforced at multiple levels:
-* Safety rules in every agent's instructions
-* Dedicated Safety Redirect path in orchestrator
-* Non-medical language in all outputs
-* Explicit disclaimers in responses
+Enforced through:
+
+* orchestrator
+* agent instructions
+* response templates
+* safety filters
 
 ---
 
 ## 🚦 End-to-End Workflow
 
-1. User inputs ingredient text (or uploads photo for OCR extraction)
-2. Orchestrator detects intent + category
-3. Parser normalizes multilingual text
-4. **QA Loop:** System detects duplicates, flags unknown ingredients, cross-checks against profile
-5. Domain agent applies risk rules
-6. Engine computes the FOR ME Score
-7. Explainer formats the output (short summary, detailed breakdown, or technical view)
-8. Memory updates non-medical reactions
+1. User inputs text or uploads a label photo
+2. OCR extracts the ingredient list
+3. Orchestrator detects intent & category
+4. Parser normalizes multilingual ingredients
+5. QA Loop validates the ingredient list
+6. Domain Agent applies risk rules
+7. Scoring Engine calculates compatibility
+8. Explainer formats output in the chosen mode
+9. Profile Update adjusts user constraints
 
-Simple for the user. Complex under the hood. Fully transparent.
+Simple for the user.
+
+Complex under the hood.
+
+Fully transparent.
 
 ---
 
@@ -304,10 +247,10 @@ Simple for the user. Complex under the hood. Fully transparent.
 
 * **LLM / Agents:** Gemini 2.5 Flash Lite + Google ADK
 * **Backend:** FastAPI
-* **Custom Tools:** parser, risk dictionary, scoring engine, OCR
-* **Memory:** in-app profile + short-term personalization
+* **Tools:** Ingredient parser, risk dictionary, category detection, OCR
+* **Memory:** Long-term & short-term personalization
 * **Deployment:** Docker + Google Cloud Run
-* **Observability:** Structured logging, metrics, request tracing
+* **Observability:** Structured logging, metrics, tracing
 
 ---
 
@@ -316,22 +259,21 @@ Simple for the user. Complex under the hood. Fully transparent.
 ### Installation
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Set API Key
+### Configure API Key
 
 ```bash
-# Copy template
 cp .env.example .env
+```
 
-# Edit .env and add your API key
-# GOOGLE_API_KEY=your-api-key-here
+Add your key:
+
+```
+GOOGLE_API_KEY=your-key
 ```
 
 Get API key: https://aistudio.google.com/app/api-keys
@@ -344,7 +286,7 @@ Get API key: https://aistudio.google.com/app/api-keys
 python main.py
 ```
 
-Server starts on `http://localhost:8080`
+Server runs at: [http://localhost:8080](http://localhost:8080)
 
 ### Test It
 
@@ -365,13 +307,11 @@ curl -X POST http://localhost:8080/chat \
 
 ## 🔌 API Endpoints
 
-### Main Endpoints
-
-* `POST /chat` — Main chat endpoint (requires `X-User-Id` header)
-* `POST /analyze` — Legacy analysis endpoint
-* `POST /onboarding` — Start onboarding flow
-* `POST /chat/upload` — Upload image for OCR analysis
-* `GET /health` — Health check
+* **POST /chat** — main endpoint (requires `X-User-Id`)
+* **POST /analyze** — legacy analysis
+* **POST /onboarding** — profile collection
+* **POST /chat/upload** — OCR image upload
+* **GET /health** — health check
 
 ### Example Request
 
@@ -489,36 +429,34 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 
 ## 🎓 Course Concepts Demonstrated
 
-This project showcases core concepts from the **5-Day AI Agents Intensive**:
-
-✅ **Multi-Agent System** — 10+ specialized agents working together  
-✅ **Agent-as-a-Tool (A2A)** — Agents invoked as tools for composable workflows  
-✅ **Custom Tools** — Parser, risk dictionary, category detection, OCR  
-✅ **Sessions & Memory** — Explicit long-term/short-term memory separation  
-✅ **Context Engineering** — Structured context building for agents  
-✅ **Observability** — Logging, metrics, and request tracing  
-✅ **Agent Deployment** — Production-ready API on Google Cloud Run  
-✅ **Type Safety** — Full type hints and TypedDict structures  
+* Multi-agent orchestration
+* Agent-as-a-Tool (A2A)
+* Custom Tools
+* Memory (long-term & short-term)
+* Context engineering
+* Observability
+* Deployment on Cloud Run
+* TypedDict / type safety
 
 ---
 
-## 🧩 Competition Context — Why This Fits Concierge Agents
+## 🧩 Competition Fit — Concierge Agents
 
-FOR ME is built for everyday decisions, not medical or enterprise use. It solves a real consumer pain:
+FOR ME solves the core question of the category:
 
-**"Is this product actually good for me?"**
+**"Is this product good for *me*?"**
 
-The project demonstrates:
+And demonstrates:
 
 * multi-agent routing
 * tool use
-* deterministic domain logic
+* deterministic rules
 * explainability
 * safety governance
 * memory
-* real deployment
+* deployment
 
-Exactly what the **Concierge Agents** category was created for.
+Perfect match.
 
 ---
 
@@ -528,11 +466,9 @@ Most people don't read ingredient lists.
 
 Not because they don't care — but because the information wasn't designed for them.
 
-FOR ME reads it for you.
+**FOR ME reads it for you.
 
-And gives you something no label ever does:
-
-**clarity, personalized.**
+And offers something no label ever does: clarity, personalized.**
 
 ---
 
@@ -545,6 +481,7 @@ This project was created for educational purposes as part of the "5-Day AI Agent
 ## 🙏 Acknowledgments
 
 Built with:
+
 * Google Agent Development Kit (ADK)
 * Gemini API
 * FastAPI
