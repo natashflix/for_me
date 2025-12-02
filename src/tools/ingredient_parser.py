@@ -88,10 +88,39 @@ def parse_ingredients(tool_context: ToolContext, ingredient_text: str) -> Dict[s
                 "error_message": "No valid ingredients found after parsing"
             }
         
+        # QA: detect duplicate ingredients before scoring
+        # Remove exact duplicates while preserving order
+        seen = set()
+        deduplicated = []
+        duplicates = []
+        for ing in normalized:
+            if ing not in seen:
+                seen.add(ing)
+                deduplicated.append(ing)
+            else:
+                duplicates.append(ing)
+        
+        # QA: flag unknown or unparsed tokens
+        # Ingredients that are too short or look like formatting artifacts
+        unknown_ingredients = []
+        for ing in deduplicated:
+            # Flag very short ingredients (likely parsing artifacts)
+            if len(ing) < 2:
+                unknown_ingredients.append(ing)
+            # Flag ingredients that are just numbers or special chars
+            elif ing.replace('.', '').replace('-', '').isdigit():
+                unknown_ingredients.append(ing)
+        
         return {
             "status": "success",
-            "ingredients": normalized,
-            "count": len(normalized)
+            "ingredients": deduplicated,
+            "count": len(deduplicated),
+            "qa_metadata": {
+                "duplicates_removed": duplicates,
+                "unknown_ingredients": unknown_ingredients,
+                "original_count": len(normalized),
+                "deduplicated_count": len(deduplicated)
+            }
         }
     
     except Exception as e:
