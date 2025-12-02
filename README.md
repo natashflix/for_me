@@ -1,10 +1,10 @@
-# ⭐ **FOR ME — Personalized Ingredient Intelligence**
+# **FOR ME — Personalized Ingredient Intelligence**
 
 A production-grade multi-agent system for real-world compatibility analysis.
 
 ---
 
-## 💔 The Moment That Inspired This Project
+## The Moment That Inspired This Project
 
 Most people genuinely try to choose the right product — but ingredient lists make that nearly impossible.
 
@@ -22,7 +22,7 @@ The information people need is there — just not in a form designed for humans.
 
 ---
 
-## 🌟 What FOR ME Does
+## What FOR ME Does
 
 FOR ME transforms ingredient lists from **food, cosmetics, and household products** into a personalized **FOR ME Score (0–100)** with clear, rule-based explanations.
 
@@ -37,7 +37,7 @@ FOR ME does **not** analyze diseases, symptoms, or treatments. It is a **consume
 
 ---
 
-## 📸 Multimodal Input (Already Supported)
+## Multimodal Input (Already Supported)
 
 Users can:
 
@@ -48,7 +48,7 @@ Both inputs run through the same multi-agent pipeline.
 
 ---
 
-## 🎯 Mission
+## Mission
 
 FOR ME exists to protect people from hidden risks in everyday products — cosmetics, food, and household chemicals.
 
@@ -56,7 +56,7 @@ It makes personalized, safe decisions possible **in seconds** for people with al
 
 ---
 
-## 🔍 Why Ingredient Lists Are Hard
+## Why Ingredient Lists Are Hard
 
 Ingredient lists are:
 
@@ -70,7 +70,7 @@ And yet, consumers must make personal choices based on them.
 
 ---
 
-## ⏱ Why This Matters
+## Why This Matters
 
 Manual ingredient checking usually takes **5–12 minutes per product**, and people still miss small-print risks: allergens, irritants, preservatives, surfactants, sugar alcohols, fragrances.
 
@@ -89,7 +89,7 @@ FOR ME reads what marketing doesn't say — and reveals whether a product is gen
 
 ---
 
-## 🧠 Why a Multi-Agent System?
+## Why a Multi-Agent System?
 
 Ingredient analysis is a **pipeline**, not a single task:
 
@@ -105,15 +105,15 @@ One LLM cannot handle all of this reliably, consistently, and safely.
 
 A multi-agent system ensures:
 
-✔ separation of responsibilities  
-✔ deterministic rule enforcement  
-✔ transparent reasoning  
-✔ medical safety boundaries  
-✔ modularity & extensibility
+* separation of responsibilities  
+* deterministic rule enforcement  
+* transparent reasoning  
+* medical safety boundaries  
+* modularity & extensibility
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### **High-Level Flow**
 
@@ -123,20 +123,20 @@ User Input → Orchestrator → Profile Manager → Domain Agent → Scoring Eng
 
 ### **Agent Team**
 
-#### 🔹 **Orchestrator**
+#### **Orchestrator**
 
 * Detects intent (analysis / onboarding / update)
 * Identifies category (food / cosmetics / household)
 * Routes through the deterministic pipeline
 * Assembles the final output
 
-#### 🔹 **Profile Manager**
+#### **Profile Manager**
 
 * Loads allergies, sensitivities, user constraints
 * Manages short-term memory (non-medical reactions)
 * Enforces domain-specific rules
 
-#### 🔹 **Domain Compatibility Agents**
+#### **Domain Compatibility Agents**
 
 Each domain uses its own logic and risk dictionaries.
 
@@ -144,7 +144,7 @@ Each domain uses its own logic and risk dictionaries.
 * **Cosmetics Agent:** fragrances, preservatives, surfactants, alcohols
 * **Household Agent:** irritants, solvents, surfactants
 
-#### 🔹 **Explainer Agent**
+#### **Explainer Agent**
 
 Turns structured scoring into human-friendly output.
 
@@ -154,7 +154,7 @@ Supports three explanation modes:
 2. **Detailed Breakdown** — bullet points for risks & triggers
 3. **Technical View** — structured, rule-based scoring trace
 
-#### 🔹 **Profile Update Agent**
+#### **Profile Update Agent**
 
 Learns non-medical feedback such as:
 
@@ -165,7 +165,7 @@ Used only to adjust user constraints.
 
 ---
 
-## 🔎 Ingredient QA Loop (Hallucination Control)
+## Ingredient QA Loop (Hallucination Control)
 
 Before scoring, FOR ME performs a QA pass:
 
@@ -178,7 +178,7 @@ This reduces hallucinations and ensures robust, deterministic scoring.
 
 ---
 
-## 🧮 How the FOR ME Score Works
+## How the FOR ME Score Works
 
 ### **Component Scores**
 
@@ -206,7 +206,7 @@ Strict allergens **cap the maximum score at 15/100**, ensuring a safety-first ap
 
 ---
 
-## 🛡️ Non-Medical Safety
+## Non-Medical Safety
 
 If user input contains medical content (symptoms, diagnoses, treatments):
 
@@ -223,7 +223,7 @@ Enforced through:
 
 ---
 
-## 🚦 End-to-End Workflow
+## End-to-End Workflow
 
 1. User inputs text or uploads a label photo
 2. OCR extracts the ingredient list
@@ -243,7 +243,7 @@ Fully transparent.
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
 * **LLM / Agents:** Gemini 2.5 Flash Lite + Google ADK
 * **Backend:** FastAPI
@@ -254,7 +254,7 @@ Fully transparent.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -278,7 +278,7 @@ GOOGLE_API_KEY=your-key
 
 Get API key: https://aistudio.google.com/app/api-keys
 
-> ⚠️ **Important**: Never commit `.env` file to git! It's already in `.gitignore`.
+> **Important**: Never commit `.env` file to git! It's already in `.gitignore`.
 
 ### Run the Server
 
@@ -301,11 +301,11 @@ curl -X POST http://localhost:8080/chat \
   }'
 ```
 
-**📖 For complete API documentation, see [API_REFERENCE.md](./API_REFERENCE.md)**
+**For complete API documentation, see [API_REFERENCE.md](./API_REFERENCE.md)**
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 * **POST /chat** — main endpoint (requires `X-User-Id`)
 * **POST /analyze** — legacy analysis
@@ -345,7 +345,7 @@ Body:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -379,7 +379,7 @@ docs/                     # Architecture documentation
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 * **[API Reference](./API_REFERENCE.md)** - Complete API documentation
 * **[Architecture](./docs/ARCHITECTURE.md)** - Detailed system design
@@ -390,7 +390,7 @@ docs/                     # Architecture documentation
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run evaluation suite
@@ -410,7 +410,7 @@ pytest tests/ --cov=src --cov-report=html
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Cloud Run
 
@@ -427,7 +427,7 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 
 ---
 
-## 🎓 Course Concepts Demonstrated
+## Course Concepts Demonstrated
 
 * Multi-agent orchestration
 * Agent-as-a-Tool (A2A)
@@ -440,7 +440,7 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 
 ---
 
-## 🧩 Competition Fit — Concierge Agents
+## Competition Fit — Concierge Agents
 
 FOR ME solves the core question of the category:
 
@@ -460,7 +460,7 @@ Perfect match.
 
 ---
 
-## 🏁 Final Thought
+## Final Thought
 
 Most people don't read ingredient lists.
 
@@ -472,13 +472,13 @@ And offers something no label ever does: clarity, personalized.**
 
 ---
 
-## 📝 License
+## License
 
 This project was created for educational purposes as part of the "5-Day AI Agents Intensive" course.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 
@@ -489,4 +489,4 @@ Built with:
 
 ---
 
-*Built with ❤️ for the 5-Day AI Agents Intensive Capstone*
+*Built with love for the 5-Day AI Agents Intensive Capstone*
