@@ -121,6 +121,68 @@ A multi-agent system ensures:
 User Input → Orchestrator → Profile Manager → Domain Agent → Scoring Engine → Explainer Agent → Profile Update
 ```
 
+### **System Architecture Diagram**
+
+```mermaid
+flowchart TB
+    U[User] --> API[FastAPI]
+    API --> EP1[/chat/]
+    API --> EP2[/upload/]
+    EP1 --> SYS[System]
+    EP2 --> OCR[OCR]
+    OCR --> EP1
+    EP2 --> SYS
+    SYS --> ORCH[Orchestrator]
+    SYS --> SESS[Session]
+    ORCH --> INT[Intent]
+    INT --> PROF{Profile?}
+    PROF -->|No| ONB[Onboarding]
+    PROF -->|Yes| CAT[Category]
+    CAT --> PARSE[Parse]
+    PARSE --> CATEG{Type?}
+    CATEG -->|food| FOOD[Food]
+    CATEG -->|cosmetics| COSM[Cosmetics]
+    CATEG -->|household| HOUSE[Household]
+    FOOD --> RISKS[Risks]
+    COSM --> RISKS
+    HOUSE --> RISKS
+    RISKS --> CTX[Context]
+    CTX --> SCORE[Scoring]
+    SCORE --> SAFE[Safety]
+    SCORE --> SENS[Sensitivity]
+    SCORE --> MATCH[Match]
+    SAFE --> FINAL[FOR ME Score]
+    SENS --> FINAL
+    MATCH --> FINAL
+    ORCH --> MEM[Memory]
+    FOOD --> MEM
+    COSM --> MEM
+    HOUSE --> MEM
+    ONB --> MEM
+    ORCH --> GEM[Gemini]
+    ONB --> GEM
+    FINAL --> RESP[Response]
+    RESP --> U
+    
+    classDef user fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef api fill:#fff4e1,stroke:#e65100,stroke-width:2px
+    classDef core fill:#ffe1f5,stroke:#880e4f,stroke-width:3px
+    classDef agent fill:#e1ffe1,stroke:#1b5e20,stroke-width:2px
+    classDef tool fill:#e1e1ff,stroke:#0d47a1,stroke-width:2px
+    classDef memory fill:#fff9e1,stroke:#f57f17,stroke-width:2px
+    classDef external fill:#f5e1ff,stroke:#4a148c,stroke-width:2px
+    classDef output fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px
+    
+    class U user
+    class API,EP1,EP2 api
+    class SYS,ORCH,INT core
+    class ONB,FOOD,COSM,HOUSE agent
+    class PARSE,RISKS,CAT,CTX,SCORE tool
+    class MEM,SESS memory
+    class GEM,OCR external
+    class FINAL,RESP output
+```
+
 ### **Agent Team**
 
 #### **Orchestrator**
