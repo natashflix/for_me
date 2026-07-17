@@ -1,5 +1,5 @@
 """
-FOR ME - Example Notebook for Kaggle Writeup
+FOR ME - Example Notebook
 Demonstrates product analysis, QA loop, and result export
 """
 

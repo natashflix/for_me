@@ -448,7 +448,7 @@ docs/                     # Architecture documentation
 * **[Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAM.md)** - Mermaid diagrams
 * **[Image Upload Guide](./docs/IMAGE_UPLOAD_GUIDE.md)** - OCR feature guide
 * **[Unit Tests](./tests/README.md)** - Test suite documentation
-* **[Example Notebook](./kaggle_notebook_example.py)** - Demo notebook with QA loop, multi-variant explanations, and result export (JSON/CSV)
+* **[Example Notebook](./example_notebook.py)** - Demo notebook with QA loop, multi-variant explanations, and result export (JSON/CSV)
 
 ---
 
@@ -489,7 +489,7 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 
 ---
 
-## Course Concepts Demonstrated
+## Engineering Concepts Demonstrated
 
 * Multi-agent orchestration
 * Agent-as-a-Tool (A2A)
@@ -499,26 +499,6 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY=your-key for-me-agent
 * Observability
 * Deployment on Cloud Run
 * TypedDict / type safety
-
----
-
-## Competition Fit — Concierge Agents
-
-FOR ME solves the core question of the category:
-
-**"Is this product good for *me*?"**
-
-And demonstrates:
-
-* multi-agent routing
-* tool use
-* deterministic rules
-* explainability
-* safety governance
-* memory
-* deployment
-
-Perfect match.
 
 ---
 
@@ -536,7 +516,7 @@ And offers something no label ever does: clarity, personalized.**
 
 ## License
 
-This project was created for educational purposes as part of the "5-Day AI Agents Intensive" course.
+This project is shared for demonstration and portfolio purposes.
 
 ---
 
@@ -551,4 +531,4 @@ Built with:
 
 ---
 
-*Built with love for the 5-Day AI Agents Intensive Capstone*
+*Built with love.*
